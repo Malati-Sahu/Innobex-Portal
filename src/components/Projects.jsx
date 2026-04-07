@@ -292,7 +292,7 @@ function Projects({ context }) {
                   />
                 </div>
               </div>
-              <button type="button" className="btn btn-primary" onClick={handleSubmitProject}>Create Project</button>
+              <button type="submit" className="btn btn-primary">Create Project</button>
             </form>
           </div>
         </div>
