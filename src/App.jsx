@@ -81,6 +81,30 @@ function App() {
     const savedUsers = JSON.parse(localStorage.getItem('users')) || [];
     setUsers(savedUsers);
 
+    // Load clients from localStorage
+    const savedClients = JSON.parse(localStorage.getItem('clients'));
+    if (savedClients && savedClients.length > 0) {
+      setClients(savedClients);
+    }
+
+    // Load projects from localStorage
+    const savedProjects = JSON.parse(localStorage.getItem('projects'));
+    if (savedProjects && savedProjects.length > 0) {
+      setProjects(savedProjects);
+    }
+
+    // Load tasks from localStorage
+    const savedTasks = JSON.parse(localStorage.getItem('tasks'));
+    if (savedTasks && savedTasks.length > 0) {
+      setTasks(savedTasks);
+    }
+
+    // Load work updates from localStorage
+    const savedWorkUpdates = JSON.parse(localStorage.getItem('workUpdates'));
+    if (savedWorkUpdates && savedWorkUpdates.length > 0) {
+      setWorkUpdates(savedWorkUpdates);
+    }
+
     // Set theme
     const savedTheme = localStorage.getItem('theme') || 'light';
     setTheme(savedTheme);
@@ -120,18 +144,22 @@ function App() {
 
   const updateProjects = (newProjects) => {
     setProjects(newProjects);
+    localStorage.setItem('projects', JSON.stringify(newProjects));
   };
 
   const updateClients = (newClients) => {
     setClients(newClients);
+    localStorage.setItem('clients', JSON.stringify(newClients));
   };
 
   const updateTasks = (newTasks) => {
     setTasks(newTasks);
+    localStorage.setItem('tasks', JSON.stringify(newTasks));
   };
 
   const updateWorkUpdates = (newWorkUpdates) => {
     setWorkUpdates(newWorkUpdates);
+    localStorage.setItem('workUpdates', JSON.stringify(newWorkUpdates));
   };
 
   const updateUsers = (newUsers) => {
