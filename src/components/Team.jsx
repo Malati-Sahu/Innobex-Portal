@@ -6,10 +6,19 @@ function Team({ context }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [accessFilter, setAccessFilter] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedMember, setSelectedMember] = useState(null);
   const [teamForm, setTeamForm] = useState({
     name: '',
     email: '',
     password: 'password123',
+    role: '',
+    accessLevel: 'full'
+  });
+  const [editForm, setEditForm] = useState({
+    name: '',
+    email: '',
     role: '',
     accessLevel: 'full'
   });
@@ -75,6 +84,46 @@ function Team({ context }) {
     setShowAddModal(false);
   };
 
+  const handleViewProfile = (member) => {
+    setSelectedMember(member);
+    setShowProfileModal(true);
+  };
+
+  const handleEdit = (member) => {
+    setSelectedMember(member);
+    setEditForm({
+      name: member.name,
+      email: member.email,
+      role: member.role,
+      accessLevel: member.accessLevel
+    });
+    setShowEditModal(true);
+  };
+
+  const handleEditFormChange = (e) => {
+    const { name, value } = e.target;
+    setEditForm(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleEditSubmit = (e) => {
+    e.preventDefault();
+
+    if (!editForm.name || !editForm.email || !editForm.role) {
+      alert('Please fill in all required fields.');
+      return;
+    }
+
+    const updatedUsers = teamMembers.map(member =>
+      member.id === selectedMember.id
+        ? { ...member, ...editForm }
+        : member
+    );
+
+    context.updateUsers(updatedUsers);
+    setShowEditModal(false);
+    setSelectedMember(null);
+  };
+
   return (
     <div id="teamPage" className="content-page active">
       <div className="container">
@@ -123,8 +172,8 @@ function Team({ context }) {
                 </div>
               </div>
               <div className="member-actions">
-                <button className="btn btn-sm">View Profile</button>
-                <button className="btn btn-sm btn-outline">Edit</button>
+                <button className="btn btn-sm" onClick={() => handleViewProfile(member)}>View Profile</button>
+                <button className="btn btn-sm btn-outline" onClick={() => handleEdit(member)}>Edit</button>
               </div>
             </div>
           ))}
@@ -198,6 +247,104 @@ function Team({ context }) {
                 </select>
               </div>
               <button type="submit" className="btn btn-primary">Add Member</button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* View Profile Modal */}
+      {showProfileModal && selectedMember && (
+        <div id="memberProfileModal" className="modal active">
+          <div className="modal-content">
+            <span className="modal-close" onClick={() => setShowProfileModal(false)}>&times;</span>
+            <h2>{selectedMember.name}</h2>
+            <div className="member-profile">
+              <div className="profile-section">
+                <h3>Profile Information</h3>
+                <div className="detail-row">
+                  <span className="detail-label">Name:</span>
+                  <span className="detail-value">{selectedMember.name}</span>
+                </div>
+                <div className="detail-row">
+                  <span className="detail-label">Email:</span>
+                  <span className="detail-value">{selectedMember.email}</span>
+                </div>
+                <div className="detail-row">
+                  <span className="detail-label">Role:</span>
+                  <span className="detail-value">{selectedMember.role}</span>
+                </div>
+                <div className="detail-row">
+                  <span className="detail-label">Access Level:</span>
+                  <span className={`detail-value ${selectedMember.accessLevel === 'full' ? 'access-full' : 'access-view'}`}>
+                    {selectedMember.accessLevel === 'full' ? 'Full Access' : 'View Access'}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Member Modal */}
+      {showEditModal && selectedMember && (
+        <div id="editMemberModal" className="modal active">
+          <div className="modal-content">
+            <span className="modal-close" onClick={() => setShowEditModal(false)}>&times;</span>
+            <h2>Edit Member</h2>
+            <form id="editMemberForm" onSubmit={handleEditSubmit}>
+              <div className="form-group">
+                <label htmlFor="editMemberName">Name *</label>
+                <input
+                  type="text"
+                  id="editMemberName"
+                  className="form-control"
+                  name="name"
+                  value={editForm.name}
+                  onChange={handleEditFormChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="editMemberEmail">Email *</label>
+                <input
+                  type="email"
+                  id="editMemberEmail"
+                  className="form-control"
+                  name="email"
+                  value={editForm.email}
+                  onChange={handleEditFormChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="editMemberRole">Role *</label>
+                <input
+                  type="text"
+                  id="editMemberRole"
+                  className="form-control"
+                  name="role"
+                  value={editForm.role}
+                  onChange={handleEditFormChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="editMemberAccess">Access Level *</label>
+                <select
+                  id="editMemberAccess"
+                  className="form-control"
+                  name="accessLevel"
+                  value={editForm.accessLevel}
+                  onChange={handleEditFormChange}
+                  required
+                >
+                  <option value="full">Full Access</option>
+                  <option value="view">View Access</option>
+                  <option value="client">Client Access</option>
+                </select>
+              </div>
+              <button type="submit" className="btn btn-primary">Save Changes</button>
+              <button type="button" className="btn btn-outline" onClick={() => setShowEditModal(false)}>Cancel</button>
             </form>
           </div>
         </div>

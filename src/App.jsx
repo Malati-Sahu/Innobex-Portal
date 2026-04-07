@@ -75,13 +75,16 @@ const MASTER_ADMIN = {
 };
 
 function App() {
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(() => {
+    const savedCurrentUser = localStorage.getItem('currentUser');
+    return savedCurrentUser ? JSON.parse(savedCurrentUser) : null;
+  });
   const [projects, setProjects] = useState(initialProjects);
   const [clients, setClients] = useState(initialClients);
   const [tasks, setTasks] = useState(initialTasks);
   const [workUpdates, setWorkUpdates] = useState(initialWorkUpdates);
   const [users, setUsers] = useState(initialUsers);
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
 
   useEffect(() => {
     // Load data from localStorage
@@ -114,16 +117,20 @@ function App() {
       setWorkUpdates(savedWorkUpdates);
     }
 
-    // Set theme
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    setTheme(savedTheme);
-    document.body.classList.toggle('dark-theme', savedTheme === 'dark');
+    // Set theme class on initial render
+    document.body.classList.toggle('dark-theme', theme === 'dark');
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem('theme', theme);
+    document.body.classList.toggle('dark-theme', theme === 'dark');
+  }, [theme]);
 
   const login = (email, password) => {
     // Master admin login
     if (email === MASTER_ADMIN.email && password === MASTER_ADMIN.password) {
       setCurrentUser(MASTER_ADMIN);
+      localStorage.setItem('currentUser', JSON.stringify(MASTER_ADMIN));
       return true;
     }
 
@@ -135,6 +142,7 @@ function App() {
 
     if (user) {
       setCurrentUser(user);
+      localStorage.setItem('currentUser', JSON.stringify(user));
       return true;
     }
     return false;
@@ -142,6 +150,7 @@ function App() {
 
   const logout = () => {
     setCurrentUser(null);
+    localStorage.removeItem('currentUser');
   };
 
   const toggleTheme = () => {
@@ -201,11 +210,11 @@ function App() {
           <Login context={contextValue} />
         ) : (
           <div>
-            <Sidebar />
+            <Sidebar context={contextValue} />
 
             {/* Top Header */}
             <div className="header-bar">
-              <Header />
+              <Header context={contextValue} />
             </div>
 
             {/* Main Content */}

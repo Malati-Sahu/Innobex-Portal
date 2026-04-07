@@ -90,12 +90,6 @@ function Login({ context }) {
             </form>
             <div className="login-footer">
               <a href="#" className="forgot-password">Lost your key? Recover it here</a>
-              <div className="demo-credentials" style={{marginTop: '24px'}}>
-                <p><strong>Demo Credentials:</strong></p>
-                <p>Admin: admin@innohexIT.com / password123</p>
-                <p>View: raj@innohexIT.com / password123</p>
-                <p>Client: john@clientcompany.com / password123</p>
-              </div>
             </div>
           </div>
         </div>

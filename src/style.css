@@ -1038,6 +1038,10 @@ select.form-control {
   font-size: 14px;
 }
 
+.dark-theme .form-message {
+  color: rgba(255, 255, 255, 0.6);
+}
+
 .btn-secondary {
   background-color: var(--white);
   color: var(--primary-blue);
@@ -1082,6 +1086,56 @@ select.form-control {
 .forgot-password:hover {
   text-decoration: underline;
   color: var(--secondary-purple);
+}
+
+/* Dark Mode Support for Login Page */
+.dark-theme .login-container {
+  background-color: var(--dark-bg);
+}
+
+.dark-theme .right-panel {
+  background-color: var(--dark-surface);
+  color: var(--light-gray);
+}
+
+.dark-theme .login-form-container {
+  color: var(--light-gray);
+}
+
+.dark-theme .login-logo {
+  color: var(--light-gray);
+}
+
+.dark-theme .login-title {
+  color: var(--light-gray);
+}
+
+.dark-theme .login-subtitle {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.dark-theme .login-footer {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.dark-theme .forgot-password {
+  color: var(--accent-orange);
+}
+
+.dark-theme .forgot-password:hover {
+  color: var(--bright-orange);
+}
+
+.dark-theme label {
+  color: var(--light-gray);
+}
+
+.dark-theme .error-message {
+  color: var(--red-400);
+}
+
+.dark-theme .form-message {
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .signup-text {
@@ -1218,20 +1272,25 @@ select.form-control {
   font-size: 14px;
 }
 
-.sidebar-logout {
-  background-color: #dc3545;
+.sidebar-logout,
+.logout-btn {
+  background-color: var(--bright-orange);
   color: white;
   border: none;
-  padding: 8px 16px;
-  border-radius: 5px;
+  padding: 12px 20px;
+  border-radius: 6px;
   cursor: pointer;
   width: 100%;
-  font-size: 14px;
-  transition: background-color 0.3s ease;
+  font-size: 15px;
+  font-weight: 500;
+  transition: all 0.3s ease;
 }
 
-.sidebar-logout:hover {
-  background-color: #c82333;
+.sidebar-logout:hover,
+.logout-btn:hover {
+  background-color: var(--dark-orange);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 107, 0, 0.3);
 }
 
 /* Header Bar */
@@ -1761,12 +1820,13 @@ select.form-control {
 }
 
 .modal.active {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .modal-content {
   background-color: var(--white);
-  margin: 5% auto;
   padding: var(--space-lg);
   border-radius: var(--radius-md);
   width: 90%;
@@ -1774,6 +1834,8 @@ select.form-control {
   position: relative;
   max-height: 85vh;
   overflow-y: auto;
+  z-index: 2001;
+  margin: 0 auto;
 }
 
 .modal-large {
@@ -1789,6 +1851,7 @@ select.form-control {
   color: var(--text-gray);
   cursor: pointer;
   transition: color 0.3s ease;
+  z-index: 2002;
 }
 
 .modal-close:hover {

@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-function Sidebar() {
+function Sidebar({ context }) {
   const location = useLocation();
+  const userName = context?.currentUser?.name || 'User Name';
+  const userRole = context?.currentUser?.role || 'Role';
 
   const menuItems = [
     { path: '/dashboard', icon: '🏠', label: 'Dashboard' },
@@ -37,7 +39,9 @@ function Sidebar() {
           <strong id="sidebarUserName">User Name</strong>
           <div id="sidebarUserRole" style={{fontSize: '12px', opacity: '0.8'}}>Role</div>
         </div>
-        <button className="logout-btn" id="sidebarLogoutBtn">Logout</button>
+        <button className="logout-btn" id="sidebarLogoutBtn" onClick={context?.logout}>
+          Logout
+        </button>
       </div>
     </aside>
   );
