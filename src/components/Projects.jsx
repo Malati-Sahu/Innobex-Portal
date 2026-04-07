@@ -140,10 +140,14 @@ function Projects({ context }) {
               </div>
               <div className="form-group">
                 <label htmlFor="newProjectTeam">Team Members *</label>
-                <select id="newProjectTeam" className="form-control" multiple required>
-                  {context.users.map(user => (
-                    <option key={user.id} value={user.id}>{user.name} - {user.role}</option>
-                  ))}
+                <select id="newProjectTeam" className="form-control" multiple size={context.users.length || 4} required>
+                  {context.users.length > 0 ? (
+                    context.users.map(user => (
+                      <option key={user.id} value={user.id}>{user.name} - {user.role}</option>
+                    ))
+                  ) : (
+                    <option disabled>No team members available</option>
+                  )}
                 </select>
               </div>
               <div className="form-row">

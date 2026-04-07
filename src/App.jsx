@@ -44,6 +44,13 @@ const initialTasks = [
   { id: 12, projectId: 3, name: 'Bug fixes and optimization', description: 'Final bug fixing and performance optimization', assignedTo: 4, assignedToName: 'Anita Desai', status: 'Completed', priority: 'High', progress: 100, startDate: '2025-10-10', deadline: '2025-10-18', createdBy: 1, createdDate: '2025-10-10T10:00:00', lastUpdated: '2025-10-18T15:00:00', comments: [{ userId: 4, userName: 'Anita Desai', text: 'All reported bugs fixed, 40% performance improvement achieved', timestamp: '2025-10-18T15:00:00' }] }
 ];
 
+const initialUsers = [
+  { id: 1, name: 'Shakti Mahato', email: 'shakti@innohex.com', role: 'Developer' },
+  { id: 2, name: 'Priya Kumar', email: 'priya@innohex.com', role: 'Designer' },
+  { id: 3, name: 'Raj Singh', email: 'raj@innohex.com', role: 'QA Engineer' },
+  { id: 4, name: 'Anita Desai', email: 'anita@innohex.com', role: 'Backend Engineer' }
+];
+
 const initialWorkUpdates = [
   { id: 1, projectId: 1, userId: 1, userName: 'Shakti Mahato', date: '2025-11-08', description: 'Completed payment gateway integration and tested with multiple payment methods', hoursWorked: 6, status: 'In Progress', progress: 65, notes: 'Need to add refund functionality next', timestamp: '2025-11-08T14:30:00' },
   { id: 2, projectId: 1, userId: 2, userName: 'Priya Kumar', date: '2025-11-08', description: 'Designed and implemented product catalog UI with filtering and search', hoursWorked: 5, status: 'In Progress', progress: 60, notes: 'Working on mobile responsiveness', timestamp: '2025-11-08T11:20:00' },
@@ -73,13 +80,15 @@ function App() {
   const [clients, setClients] = useState(initialClients);
   const [tasks, setTasks] = useState(initialTasks);
   const [workUpdates, setWorkUpdates] = useState(initialWorkUpdates);
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState(initialUsers);
   const [theme, setTheme] = useState('light');
 
   useEffect(() => {
     // Load data from localStorage
-    const savedUsers = JSON.parse(localStorage.getItem('users')) || [];
-    setUsers(savedUsers);
+    const savedUsers = JSON.parse(localStorage.getItem('users'));
+    if (savedUsers && savedUsers.length > 0) {
+      setUsers(savedUsers);
+    }
 
     // Load clients from localStorage
     const savedClients = JSON.parse(localStorage.getItem('clients'));
