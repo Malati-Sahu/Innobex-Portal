@@ -25,8 +25,9 @@ function Sidebar() {
             key={item.path}
             className={`sidebar-menu-item ${location.pathname === item.path ? 'active' : ''}`}
           >
-            <Link to={item.path}>
-              <span>{item.icon}</span> {item.label}
+            <Link to={item.path} className="sidebar-link">
+              <span>{item.icon}</span>
+              <span>{item.label}</span>
             </Link>
           </li>
         ))}
@@ -36,7 +37,7 @@ function Sidebar() {
           <strong id="sidebarUserName">User Name</strong>
           <div id="sidebarUserRole" style={{fontSize: '12px', opacity: '0.8'}}>Role</div>
         </div>
-        <button className="sidebar-logout" id="sidebarLogoutBtn">Logout</button>
+        <button className="logout-btn" id="sidebarLogoutBtn">Logout</button>
       </div>
     </aside>
   );
