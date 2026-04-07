@@ -45,10 +45,10 @@ const initialTasks = [
 ];
 
 const initialUsers = [
-  { id: 1, name: 'Shakti Mahato', email: 'shakti@innohex.com', role: 'Developer' },
-  { id: 2, name: 'Priya Kumar', email: 'priya@innohex.com', role: 'Designer' },
-  { id: 3, name: 'Raj Singh', email: 'raj@innohex.com', role: 'QA Engineer' },
-  { id: 4, name: 'Anita Desai', email: 'anita@innohex.com', role: 'Backend Engineer' }
+  { id: 1, name: 'Shakti Mahato', email: 'shakti@innohex.com', password: 'password123', role: 'Developer', accessLevel: 'full' },
+  { id: 2, name: 'Priya Kumar', email: 'priya@innohex.com', password: 'password123', role: 'Designer', accessLevel: 'view' },
+  { id: 3, name: 'Raj Singh', email: 'raj@innohex.com', password: 'password123', role: 'QA Engineer', accessLevel: 'view' },
+  { id: 4, name: 'Anita Desai', email: 'anita@innohex.com', password: 'password123', role: 'Backend Engineer', accessLevel: 'full' }
 ];
 
 const initialWorkUpdates = [

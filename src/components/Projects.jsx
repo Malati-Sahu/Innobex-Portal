@@ -6,11 +6,25 @@ function Projects({ context }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
+  const [projectForm, setProjectForm] = useState({
+    name: '',
+    description: '',
+    clientId: '',
+    teamMembers: [],
+    startDate: '',
+    deadline: ''
+  });
 
   useEffect(() => {
     setProjects(context.projects);
     setFilteredProjects(context.projects);
   }, [context.projects]);
+
+  useEffect(() => {
+    if (!projectForm.clientId && context.clients.length > 0) {
+      setProjectForm(prev => ({ ...prev, clientId: context.clients[0].id }));
+    }
+  }, [context.clients]);
 
   useEffect(() => {
     let filtered = projects;
@@ -30,7 +44,56 @@ function Projects({ context }) {
   }, [projects, searchTerm, statusFilter]);
 
   const handleAddProject = () => {
+    setProjectForm({
+      name: '',
+      description: '',
+      clientId: context.clients.length > 0 ? context.clients[0].id : '',
+      teamMembers: [],
+      startDate: '',
+      deadline: ''
+    });
     setShowAddModal(true);
+  };
+
+  const handleProjectFormChange = (e) => {
+    const { id, value } = e.target;
+    const fieldName = id.replace('newProject', '').charAt(0).toLowerCase() + id.replace('newProject', '').slice(1);
+    const nextValue = fieldName === 'clientId' ? Number(value) : value;
+    setProjectForm(prev => ({ ...prev, [fieldName]: nextValue }));
+  };
+
+  const handleTeamSelection = (e) => {
+    const selected = Array.from(e.target.selectedOptions, option => Number(option.value));
+    setProjectForm(prev => ({ ...prev, teamMembers: selected }));
+  };
+
+  const handleSubmitProject = (e) => {
+    e.preventDefault();
+
+    if (!projectForm.name || !projectForm.description || !projectForm.clientId || projectForm.teamMembers.length === 0 || !projectForm.startDate || !projectForm.deadline) {
+      alert('Please fill in all required fields and select at least one team member.');
+      return;
+    }
+
+    const client = context.clients.find(c => c.id === Number(projectForm.clientId));
+    const newProject = {
+      id: Math.max(...projects.map(p => p.id), 0) + 1,
+      name: projectForm.name,
+      description: projectForm.description,
+      clientId: Number(projectForm.clientId),
+      clientName: client ? client.name : '',
+      assignedTeamMembers: projectForm.teamMembers,
+      status: 'Not Started',
+      progress: 0,
+      startDate: projectForm.startDate,
+      deadline: projectForm.deadline,
+      createdDate: new Date().toISOString().split('T')[0],
+      lastUpdated: new Date().toISOString().split('T')[0]
+    };
+
+    const updatedProjects = [...projects, newProject];
+    context.updateProjects(updatedProjects);
+    setShowAddModal(false);
   };
 
   const getStatusClass = (status) => {
@@ -121,18 +184,38 @@ function Projects({ context }) {
           <div className="modal-content">
             <span className="modal-close" onClick={() => setShowAddModal(false)}>&times;</span>
             <h2>Add New Project</h2>
-            <form id="addProjectForm">
+            <form id="addProjectForm" onSubmit={handleSubmitProject}>
               <div className="form-group">
                 <label htmlFor="newProjectName">Project Name *</label>
-                <input type="text" id="newProjectName" className="form-control" required />
+                <input
+                  type="text"
+                  id="newProjectName"
+                  className="form-control"
+                  value={projectForm.name}
+                  onChange={handleProjectFormChange}
+                  required
+                />
               </div>
               <div className="form-group">
                 <label htmlFor="newProjectDescription">Description *</label>
-                <textarea id="newProjectDescription" className="form-control" rows="3" required></textarea>
+                <textarea
+                  id="newProjectDescription"
+                  className="form-control"
+                  rows="3"
+                  value={projectForm.description}
+                  onChange={handleProjectFormChange}
+                  required
+                ></textarea>
               </div>
               <div className="form-group">
                 <label htmlFor="newProjectClient">Client *</label>
-                <select id="newProjectClient" className="form-control" required>
+                <select
+                  id="newProjectClient"
+                  className="form-control"
+                  value={projectForm.clientId}
+                  onChange={handleProjectFormChange}
+                  required
+                >
                   {context.clients.map(client => (
                     <option key={client.id} value={client.id}>{client.name} - {client.company}</option>
                   ))}
@@ -140,7 +223,15 @@ function Projects({ context }) {
               </div>
               <div className="form-group">
                 <label htmlFor="newProjectTeam">Team Members *</label>
-                <select id="newProjectTeam" className="form-control" multiple size={context.users.length || 4} required>
+                <select
+                  id="newProjectTeam"
+                  className="form-control"
+                  multiple
+                  size={Math.max(context.users.length, 4)}
+                  value={projectForm.teamMembers}
+                  onChange={handleTeamSelection}
+                  required
+                >
                   {context.users.length > 0 ? (
                     context.users.map(user => (
                       <option key={user.id} value={user.id}>{user.name} - {user.role}</option>
@@ -153,11 +244,25 @@ function Projects({ context }) {
               <div className="form-row">
                 <div className="form-group">
                   <label htmlFor="newProjectStart">Start Date *</label>
-                  <input type="date" id="newProjectStart" className="form-control" required />
+                  <input
+                    type="date"
+                    id="newProjectStart"
+                    className="form-control"
+                    value={projectForm.startDate}
+                    onChange={handleProjectFormChange}
+                    required
+                  />
                 </div>
                 <div className="form-group">
                   <label htmlFor="newProjectDeadline">Deadline *</label>
-                  <input type="date" id="newProjectDeadline" className="form-control" required />
+                  <input
+                    type="date"
+                    id="newProjectDeadline"
+                    className="form-control"
+                    value={projectForm.deadline}
+                    onChange={handleProjectFormChange}
+                    required
+                  />
                 </div>
               </div>
               <button type="submit" className="btn btn-primary">Create Project</button>

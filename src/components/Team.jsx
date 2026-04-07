@@ -6,6 +6,13 @@ function Team({ context }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [accessFilter, setAccessFilter] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
+  const [teamForm, setTeamForm] = useState({
+    name: '',
+    email: '',
+    password: 'password123',
+    role: '',
+    accessLevel: 'full'
+  });
 
   useEffect(() => {
     setTeamMembers(context.users);
@@ -30,7 +37,42 @@ function Team({ context }) {
   }, [teamMembers, searchTerm, accessFilter]);
 
   const handleAddTeamMember = () => {
+    setTeamForm({
+      name: '',
+      email: '',
+      password: 'password123',
+      role: '',
+      accessLevel: 'full'
+    });
     setShowAddModal(true);
+  };
+
+  const handleTeamFormChange = (e) => {
+    const { id, value } = e.target;
+    const fieldName = id.replace('newMember', '').charAt(0).toLowerCase() + id.replace('newMember', '').slice(1);
+    setTeamForm(prev => ({ ...prev, [fieldName]: value }));
+  };
+
+  const handleTeamSubmit = (e) => {
+    e.preventDefault();
+
+    if (!teamForm.name || !teamForm.email || !teamForm.password || !teamForm.role || !teamForm.accessLevel) {
+      alert('Please fill in all required fields.');
+      return;
+    }
+
+    const newMember = {
+      id: Math.max(...teamMembers.map(member => member.id), 0) + 1,
+      name: teamForm.name,
+      email: teamForm.email,
+      password: teamForm.password,
+      role: teamForm.role,
+      accessLevel: teamForm.accessLevel
+    };
+
+    const updatedUsers = [...teamMembers, newMember];
+    context.updateUsers(updatedUsers);
+    setShowAddModal(false);
   };
 
   return (
@@ -95,26 +137,61 @@ function Team({ context }) {
           <div className="modal-content">
             <span className="modal-close" onClick={() => setShowAddModal(false)}>&times;</span>
             <h2>Add Team Member</h2>
-            <form id="addTeamMemberForm">
+            <form id="addTeamMemberForm" onSubmit={handleTeamSubmit}>
               <div className="form-group">
                 <label htmlFor="newMemberName">Name *</label>
-                <input type="text" id="newMemberName" className="form-control" required />
+                <input
+                  type="text"
+                  id="newMemberName"
+                  className="form-control"
+                  value={teamForm.name}
+                  onChange={handleTeamFormChange}
+                  required
+                />
               </div>
               <div className="form-group">
                 <label htmlFor="newMemberEmail">Email *</label>
-                <input type="email" id="newMemberEmail" className="form-control" required />
+                <input
+                  type="email"
+                  id="newMemberEmail"
+                  className="form-control"
+                  value={teamForm.email}
+                  onChange={handleTeamFormChange}
+                  required
+                />
               </div>
               <div className="form-group">
                 <label htmlFor="newMemberPassword">Password *</label>
-                <input type="password" id="newMemberPassword" className="form-control" defaultValue="password123" required />
+                <input
+                  type="password"
+                  id="newMemberPassword"
+                  className="form-control"
+                  value={teamForm.password}
+                  onChange={handleTeamFormChange}
+                  required
+                />
               </div>
               <div className="form-group">
                 <label htmlFor="newMemberRole">Role *</label>
-                <input type="text" id="newMemberRole" className="form-control" placeholder="e.g., Developer" required />
+                <input
+                  type="text"
+                  id="newMemberRole"
+                  className="form-control"
+                  placeholder="e.g., Developer"
+                  value={teamForm.role}
+                  onChange={handleTeamFormChange}
+                  required
+                />
               </div>
               <div className="form-group">
                 <label htmlFor="newMemberAccess">Access Level *</label>
-                <select id="newMemberAccess" className="form-control" required>
+                <select
+                  id="newMemberAccess"
+                  className="form-control"
+                  value={teamForm.accessLevel}
+                  onChange={handleTeamFormChange}
+                  required
+                >
                   <option value="full">Full Access</option>
                   <option value="view">View Access</option>
                   <option value="client">Client Access</option>
