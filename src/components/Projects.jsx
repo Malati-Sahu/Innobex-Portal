@@ -57,14 +57,41 @@ function Projects({ context }) {
 
   const handleProjectFormChange = (e) => {
     const { id, value } = e.target;
-    const fieldName = id.replace('newProject', '').charAt(0).toLowerCase() + id.replace('newProject', '').slice(1);
-    const nextValue = fieldName === 'clientId' ? Number(value) : value;
-    setProjectForm(prev => ({ ...prev, [fieldName]: nextValue }));
+    let key;
+
+    switch (id) {
+      case 'newProjectName':
+        key = 'name';
+        break;
+      case 'newProjectDescription':
+        key = 'description';
+        break;
+      case 'newProjectClient':
+        key = 'clientId';
+        break;
+      case 'newProjectStart':
+        key = 'startDate';
+        break;
+      case 'newProjectDeadline':
+        key = 'deadline';
+        break;
+      default:
+        return;
+    }
+
+    setProjectForm(prev => ({ ...prev, [key]: key === 'clientId' ? Number(value) : value }));
   };
 
-  const handleTeamSelection = (e) => {
-    const selected = Array.from(e.target.selectedOptions, option => Number(option.value));
-    setProjectForm(prev => ({ ...prev, teamMembers: selected }));
+  const toggleTeamMember = (userId) => {
+    setProjectForm(prev => {
+      const exists = prev.teamMembers.includes(userId);
+      return {
+        ...prev,
+        teamMembers: exists
+          ? prev.teamMembers.filter(id => id !== userId)
+          : [...prev.teamMembers, userId]
+      };
+    });
   };
 
   const handleSubmitProject = (e) => {
@@ -222,24 +249,24 @@ function Projects({ context }) {
                 </select>
               </div>
               <div className="form-group">
-                <label htmlFor="newProjectTeam">Team Members *</label>
-                <select
-                  id="newProjectTeam"
-                  className="form-control"
-                  multiple
-                  size={Math.max(context.users.length, 4)}
-                  value={projectForm.teamMembers}
-                  onChange={handleTeamSelection}
-                  required
-                >
+                <label>Team Members *</label>
+                <div className="checkbox-group team-members-checkboxes">
                   {context.users.length > 0 ? (
                     context.users.map(user => (
-                      <option key={user.id} value={user.id}>{user.name} - {user.role}</option>
+                      <label key={user.id} className="checkbox-label">
+                        <input
+                          type="checkbox"
+                          value={user.id}
+                          checked={projectForm.teamMembers.includes(user.id)}
+                          onChange={() => toggleTeamMember(user.id)}
+                        />
+                        {user.name} - {user.role}
+                      </label>
                     ))
                   ) : (
-                    <option disabled>No team members available</option>
+                    <p>No team members available</p>
                   )}
-                </select>
+                </div>
               </div>
               <div className="form-row">
                 <div className="form-group">
@@ -265,7 +292,7 @@ function Projects({ context }) {
                   />
                 </div>
               </div>
-              <button type="submit" className="btn btn-primary">Create Project</button>
+              <button type="button" className="btn btn-primary" onClick={handleSubmitProject}>Create Project</button>
             </form>
           </div>
         </div>
