@@ -84,6 +84,12 @@ function App() {
   const [theme, setTheme] = useState('light');
 
   useEffect(() => {
+    // Load currentUser from localStorage
+    const savedCurrentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (savedCurrentUser) {
+      setCurrentUser(savedCurrentUser);
+    }
+
     // Load data from localStorage
     const savedUsers = JSON.parse(localStorage.getItem('users'));
     if (savedUsers && savedUsers.length > 0) {
@@ -124,6 +130,7 @@ function App() {
     // Master admin login
     if (email === MASTER_ADMIN.email && password === MASTER_ADMIN.password) {
       setCurrentUser(MASTER_ADMIN);
+      localStorage.setItem('currentUser', JSON.stringify(MASTER_ADMIN));
       return true;
     }
 
@@ -135,6 +142,7 @@ function App() {
 
     if (user) {
       setCurrentUser(user);
+      localStorage.setItem('currentUser', JSON.stringify(user));
       return true;
     }
     return false;
@@ -142,6 +150,7 @@ function App() {
 
   const logout = () => {
     setCurrentUser(null);
+    localStorage.removeItem('currentUser');
   };
 
   const toggleTheme = () => {
