@@ -163,10 +163,16 @@ function App() {
         {!currentUser ? (
           <Login context={contextValue} />
         ) : (
-          <div className="main-app">
+          <div>
             <Sidebar />
-            <div className="main-content">
+
+            {/* Top Header */}
+            <div className="header-bar">
               <Header />
+            </div>
+
+            {/* Main Content */}
+            <div className="main-container">
               <Routes>
                 <Route path="/" element={<Navigate to="/dashboard" replace />} />
                 <Route path="/dashboard" element={<Dashboard context={contextValue} />} />
